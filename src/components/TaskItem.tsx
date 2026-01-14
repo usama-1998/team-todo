@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 import type { Task } from '../types';
+import { DatePicker } from './DatePicker';
 
 interface TaskItemProps {
     task: Task;
@@ -82,14 +83,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
         setEditingNotes(false);
     };
 
-    const handleSetDueDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const date = new Date(e.target.value);
-        if (onUpdate) {
-            onUpdate({ dueDate: date.getTime() });
-            toast.success('Due date set');
-        }
-        setShowDatePicker(false);
-    };
+
 
     const handleRemoveDueDate = () => {
         if (onUpdate) {
@@ -263,37 +257,49 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                     Due Date
                                 </span>
                                 <div className="flex items-center gap-2">
-                                    {task.dueDate ? (
-                                        <>
-                                            <span className={clsx(
-                                                "text-sm px-3 py-1.5 rounded-lg",
-                                                formatDueDate(task.dueDate).color
-                                            )}>
-                                                {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                            </span>
+                                    <div className="relative">
+                                        {showDatePicker ? (
+                                            <DatePicker
+                                                selectedDate={task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}
+                                                onChange={(dateStr) => {
+                                                    if (onUpdate) {
+                                                        const date = dateStr ? new Date(dateStr) : undefined;
+                                                        onUpdate({ dueDate: date ? date.getTime() : undefined });
+                                                        toast.success(date ? 'Due date set' : 'Due date removed');
+                                                    }
+                                                    setShowDatePicker(false);
+                                                }}
+                                                onClose={() => setShowDatePicker(false)}
+                                            />
+                                        ) : task.dueDate ? (
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setShowDatePicker(true); }}
+                                                    className={clsx(
+                                                        "text-sm px-3 py-1.5 rounded-lg transition-all hover:brightness-110",
+                                                        formatDueDate(task.dueDate).color
+                                                    )}
+                                                    title="Click to change date"
+                                                >
+                                                    {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                </button>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleRemoveDueDate(); }}
+                                                    className="text-white/30 hover:text-red-400 p-1"
+                                                    title="Remove date"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ) : (
                                             <button
-                                                onClick={(e) => { e.stopPropagation(); handleRemoveDueDate(); }}
-                                                className="text-white/30 hover:text-red-400 p-1"
+                                                onClick={(e) => { e.stopPropagation(); setShowDatePicker(true); }}
+                                                className="text-sm text-white/40 hover:text-white px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
                                             >
-                                                <X size={14} />
+                                                + Add date
                                             </button>
-                                        </>
-                                    ) : showDatePicker ? (
-                                        <input
-                                            type="date"
-                                            onChange={handleSetDueDate}
-                                            className="bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-white/40"
-                                            autoFocus
-                                            onClick={(e) => e.stopPropagation()}
-                                        />
-                                    ) : (
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); setShowDatePicker(true); }}
-                                            className="text-sm text-white/40 hover:text-white px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-                                        >
-                                            + Add date
-                                        </button>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 

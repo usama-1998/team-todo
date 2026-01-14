@@ -12,7 +12,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 - **Personalized Onboarding** - Welcomes you by name on first launch, stored locally.
 - **Smart Lists** - Create, rename, and delete task lists with real-time updates.
 - **Task Priorities & Sorting** - Custom animated priority dropdowns; tasks auto-sort by Priority then Date.
-- **Due Dates** - Integrated calendar picker for due dates; defaults to "Today" if unspecified.
+- **Smart Date Picker** - Quick-select shortcuts (Today, Tomorrow, Weekend) and a premium calendar UI.
 - **Daily Progress** - Visual progress ring showing your completion rate for the day.
 - **Smart Backgrounds** - Choose presets or search online (powered by LoremFlickr) for any background image.
 - **Quick Notes** - Add simple notes to your tasks.
