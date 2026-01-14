@@ -1,15 +1,6 @@
-export type Role = 'HAMZA' | 'USAMA';
-
-export interface User {
-    id: string;
-    name: string;
-    role: Role;
-}
-
 export interface List {
     id: string;
     name: string;
-    createdBy: string; // userId
 }
 
 export interface Link {
@@ -25,8 +16,6 @@ export interface Task {
     title: string;
     completed: boolean;
     listId: string;
-    assignedTo?: string; // userId
-    createdBy: string; // userId
     createdAt: number;
     priority?: Priority;
     notes?: string;

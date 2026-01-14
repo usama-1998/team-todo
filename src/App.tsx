@@ -25,8 +25,6 @@ function App() {
     toggleTask,
     deleteTask,
     updateTask,
-    currentUser,
-    switchUser,
     activeTab,
     setActiveTab,
     background,
@@ -108,7 +106,7 @@ function App() {
 
       {/* Greeting Widget */}
       <div className="relative z-10 mb-6 w-full max-w-4xl px-4 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
-        <Greeting name={currentUser.name} />
+        <Greeting />
         <QuickLinks links={links} onAdd={addLink} onDelete={deleteLink} />
       </div>
 
@@ -124,7 +122,6 @@ function App() {
           lists={lists}
           tasks={tasks}
           activeTab={activeTab}
-          currentUser={currentUser}
           setActiveTab={setActiveTab}
           deleteList={deleteList}
           renameList={renameList}
@@ -154,14 +151,13 @@ function App() {
       <Settings
         showSettings={showSettings}
         setShowSettings={setShowSettings}
-        currentUser={currentUser}
-        switchUser={switchUser}
         background={background}
         setBackground={setBackground}
         customBgUrl={customBgUrl}
         setCustomBgUrl={setCustomBgUrl}
         handleSaveSettings={handleSaveSettings}
       />
+
     </div>
   );
 }

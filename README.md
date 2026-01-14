@@ -8,7 +8,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 
 - **Modular Architecture** - Refactored into specialized components for better maintainability and performance.
 - **Premium UI/UX** - Advanced glassmorphism design system using `backdrop-filter` and custom CSS design tokens.
-- **Multi-user Support** - Switch between team members (Hamza & Usama) with specific task assignments.
+
 - **Smart Lists** - Create, rename, and delete task lists with real-time updates.
 - **Task Priorities** - Visual priority badges (High/Medium/Low) with glowing effects and color coding.
 - **Due Dates** - Track deadlines with relative time display (Overdue, Due Today, Tomorrow).
@@ -64,7 +64,7 @@ The app is now organized into specialized components located in `src/components/
 - `Sidebar.tsx` - List Navigation & Creation
 - `TaskBoard.tsx` - Main Task Interaction Area
 - `TaskItem.tsx` - Detailed Task Card logic
-- `Settings.tsx` - Customization & User Switching
+- `Settings.tsx` - Customization & Backgrounds
 - ...and more refined sub-components.
 
 ## 📄 License

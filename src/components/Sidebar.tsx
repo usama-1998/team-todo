@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { TabButton } from './TabButton';
-import type { List, Task, User } from '../types';
-
+import type { List, Task } from '../types';
 interface SidebarProps {
     lists: List[];
     tasks: Task[];
     activeTab: string;
-    currentUser: User;
     setActiveTab: (tab: string) => void;
     deleteList: (id: string) => void;
     renameList: (id: string, name: string) => void;
@@ -18,7 +16,6 @@ export function Sidebar({
     lists,
     tasks,
     activeTab,
-    currentUser,
     setActiveTab,
     deleteList,
     renameList,
@@ -53,15 +50,6 @@ export function Sidebar({
                         onRename={(name) => renameList(list.id, name)}
                     />
                 ))}
-
-                {(currentUser.role === 'HAMZA' || currentUser.role === 'USAMA') && (
-                    <TabButton
-                        label="For Usama"
-                        count={tasks.filter(t => t.assignedTo === 'u2').length}
-                        active={activeTab === 'For Usama'}
-                        onClick={() => setActiveTab('For Usama')}
-                    />
-                )}
 
                 <div className="relative">
                     {!isAddingList ? (

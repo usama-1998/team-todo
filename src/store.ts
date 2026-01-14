@@ -1,11 +1,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Task, User, Role, List, Link, Priority } from './types';
+import type { Task, List, Link, Priority } from './types';
 import { v4 as uuidv4 } from 'uuid';
 
 interface AppState {
-    currentUser: User;
-    users: User[];
     tasks: Task[];
     lists: List[];
     links: Link[];
@@ -13,7 +11,6 @@ interface AppState {
     background: string;
 
     // Actions
-    switchUser: (role: Role) => void;
     setActiveTab: (tab: string) => void;
     addTask: (title: string, priority?: Priority) => void;
     updateTask: (id: string, updates: Partial<Task>) => void;
@@ -30,9 +27,6 @@ interface AppState {
     addLink: (title: string, url: string) => void;
     deleteLink: (id: string) => void;
 }
-
-const HAMZA: User = { id: 'u1', name: 'Hamza', role: 'HAMZA' };
-const USAMA: User = { id: 'u2', name: 'Usama', role: 'USAMA' };
 
 // Custom storage wrapper for Chrome Storage Sync (with local fallback)
 const storage = {
@@ -62,8 +56,6 @@ const storage = {
 export const useStore = create<AppState>()(
     persist(
         (set, get) => ({
-            currentUser: HAMZA,
-            users: [HAMZA, USAMA],
             tasks: [],
             lists: [],
             links: [
@@ -73,20 +65,13 @@ export const useStore = create<AppState>()(
             activeTab: '', // Start empty, will be handled by UI to show "Create First List"
             background: '/background.png',
 
-            switchUser: (role) => {
-                const user = role === 'HAMZA' ? HAMZA : USAMA;
-                set({ currentUser: user });
-            },
-
             setActiveTab: (tab) => set({ activeTab: tab }),
             setBackground: (bg) => set({ background: bg }),
 
             addList: (name) => {
-                const { currentUser } = get();
                 const newList: List = {
                     id: uuidv4(),
                     name,
-                    createdBy: currentUser.id
                 };
                 set((state) => ({
                     lists: [...state.lists, newList],
@@ -122,24 +107,16 @@ export const useStore = create<AppState>()(
             },
 
             addTask: (title, priority = 'medium') => {
-                const { currentUser, activeTab } = get();
-                // If no active tab (or 'For Usama' special case logic handled in UI but here we need a listId),
-                // we assume activeTab is valid listId or 'For Usama'
+                const { activeTab } = get();
+                // If no active tab, we assume activeTab is valid listId
 
-                let assignedTo = currentUser.id;
                 const listId = activeTab;
-
-                if (currentUser.role === 'HAMZA' && activeTab === 'For Usama') {
-                    assignedTo = USAMA.id;
-                }
 
                 const newTask: Task = {
                     id: uuidv4(),
                     title,
                     completed: false,
                     listId,
-                    assignedTo,
-                    createdBy: currentUser.id,
                     createdAt: Date.now(),
                     priority,
                 };

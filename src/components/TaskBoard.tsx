@@ -42,9 +42,6 @@ export function TaskBoard({
     updateTask
 }: TaskBoardProps) {
     const filteredTasks = tasks.filter(task => {
-        if (activeTab === 'For Usama') {
-            return task.listId === 'For Usama' || task.assignedTo === 'u2';
-        }
         return task.listId === activeTab;
     });
 
@@ -106,7 +103,7 @@ export function TaskBoard({
                             type="text"
                             value={newTaskTitle}
                             onChange={(e) => setNewTaskTitle(e.target.value)}
-                            placeholder={activeTab === 'For Usama' ? "Assign a task for Usama..." : "Add a new task..."}
+                            placeholder="Add a new task..."
                             className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-6 pr-12 py-4 text-base text-white placeholder-white/20 focus:outline-none focus:bg-white/[0.07] focus:border-white/20 transition-all font-light shadow-2xl"
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">

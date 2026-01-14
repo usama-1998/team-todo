@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function Greeting({ name }: { name: string }) {
+export function Greeting() {
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
 
@@ -15,7 +15,7 @@ export function Greeting({ name }: { name: string }) {
     return (
         <div className="flex flex-col">
             <h1 className="text-2xl font-light tracking-tight text-white mb-2">
-                {greeting}, <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-blue-200">{name}</span>
+                {greeting}
             </h1>
             <p className="text-white/60 text-sm font-light italic">"{quote}"</p>
         </div>

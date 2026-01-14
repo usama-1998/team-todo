@@ -1,13 +1,10 @@
-import { X, Settings as SettingsIcon, User as UserIcon, Link as LinkIcon } from 'lucide-react';
+import { X, Settings as SettingsIcon, Link as LinkIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
-import type { User, Role } from '../types';
 
 interface SettingsProps {
     showSettings: boolean;
     setShowSettings: (show: boolean) => void;
-    currentUser: User;
-    switchUser: (role: Role) => void;
     background: string;
     setBackground: (bg: string) => void;
     customBgUrl: string;
@@ -18,8 +15,6 @@ interface SettingsProps {
 export function Settings({
     showSettings,
     setShowSettings,
-    currentUser,
-    switchUser,
     background,
     setBackground,
     customBgUrl,
@@ -42,21 +37,6 @@ export function Settings({
                     <SettingsIcon size={18} />
                     Settings
                 </button>
-
-                <div className="relative group">
-                    <button className="bg-black/60 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 hover:bg-white/10 transition-colors text-sm font-medium flex items-center gap-2 hover:border-white/30">
-                        <UserIcon size={18} />
-                        <span>{currentUser.name}</span>
-                    </button>
-                    <div className="absolute bottom-full right-0 mb-3 w-36 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden invisible group-hover:visible transition-all opacity-0 group-hover:opacity-100 shadow-xl">
-                        <button onClick={() => switchUser('HAMZA')} className="w-full text-left px-4 py-3 text-sm hover:bg-white/10 transition-colors border-b border-white/5">
-                            Hamza (Admin)
-                        </button>
-                        <button onClick={() => switchUser('USAMA')} className="w-full text-left px-4 py-3 text-sm hover:bg-white/10 transition-colors">
-                            Usama
-                        </button>
-                    </div>
-                </div>
             </div>
 
             {showSettings && (
