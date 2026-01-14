@@ -15,7 +15,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 - **Due Dates** - Integrated calendar picker for due dates; defaults to "Today" if unspecified.
 - **Daily Progress** - Visual progress ring showing your completion rate for the day.
 - **Smart Backgrounds** - Choose presets or search online (powered by LoremFlickr) for any background image.
-- **Notes & Documents** - Rich task details with persistent notes and link attachments.
+- **Quick Notes** - Add simple notes to your tasks.
 - **Quick Links** - Customizable header bookmarks for frequently accessed sites.
 - **Dual Timezone Clocks** - Instant view of PKT and SGT times.
 - **Fluid Animations** - Telegram-style layout animations using Framer Motion for a premium native app feel.

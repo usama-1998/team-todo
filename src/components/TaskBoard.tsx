@@ -1,5 +1,5 @@
-import { Plus, Flag, CheckCircle2, Calendar } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, CheckCircle2, Calendar } from 'lucide-react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { TaskItem } from './TaskItem';
 import clsx from 'clsx';
 import type { Task, Priority } from '../types';
@@ -23,6 +23,7 @@ interface TaskBoardProps {
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
     updateTask: (id: string, updates: Partial<Task>) => void;
+    reorderTasks: (newOrder: Task[]) => void;
 }
 
 export function TaskBoard({
@@ -43,21 +44,29 @@ export function TaskBoard({
     handleAddTask,
     toggleTask,
     deleteTask,
-    updateTask
+    updateTask,
+    reorderTasks
 }: TaskBoardProps) {
 
-    // Sort logic: High -> Medium -> Low, then by Date
-    const priorityWeight = { high: 3, medium: 2, low: 1 };
+    // Data filtered by list, but NOT sorted automatically to preserve drag-and-drop order
+    const filteredTasks = tasks.filter(task => task.listId === activeTab);
 
-    const filteredTasks = tasks
-        .filter(task => task.listId === activeTab)
-        .sort((a, b) => {
-            const weightA = priorityWeight[a.priority || 'medium'];
-            const weightB = priorityWeight[b.priority || 'medium'];
+    // Handler for reordering
+    const handleReorder = (newOrder: Task[]) => {
+        // We need to merge the new order of *filtered* tasks back into the full *tasks* array
+        // This is a bit tricky because 'tasks' contains tasks from ALL lists.
+        // Strategy: Create a Map of the new order indices for the active list, 
+        // then reconstruct the full list.
+        // SIMPLER STRATEGY for local state: Just call reorderTasks with the full list constructed appropriately.
+        // Actually, Reorder.Group expects the full array it renders.
 
-            if (weightA !== weightB) return weightB - weightA; // Higher priority first
-            return (a.createdAt || 0) - (b.createdAt || 0); // Older tasks first (FIFO within priority)
-        });
+        // For simplicity in this specific "per-list" view, relying on the 'filteredTasks' for the Reorder.Group
+        // When 'onReorder' is called, it gives us the new order of 'filteredTasks'.
+        // We need to update the global 'tasks' state.
+
+        const otherTasks = tasks.filter(task => task.listId !== activeTab);
+        reorderTasks([...newOrder, ...otherTasks]);
+    };
 
     return (
         <>
@@ -103,9 +112,13 @@ export function TaskBoard({
                                 <p className="font-light text-xl">All caught up</p>
                             </motion.div>
                         ) : (
-                            filteredTasks.map(task => (
-                                <TaskItem key={task.id} task={task} onToggle={() => toggleTask(task.id)} onDelete={() => deleteTask(task.id)} onUpdate={(updates) => updateTask(task.id, updates)} />
-                            ))
+                            <Reorder.Group axis="y" values={filteredTasks} onReorder={handleReorder} className="space-y-3">
+                                {filteredTasks.map(task => (
+                                    <Reorder.Item key={task.id} value={task} className="cursor-grab active:cursor-grabbing">
+                                        <TaskItem task={task} onToggle={() => toggleTask(task.id)} onDelete={() => deleteTask(task.id)} onUpdate={(updates) => updateTask(task.id, updates)} />
+                                    </Reorder.Item>
+                                ))}
+                            </Reorder.Group>
                         )}
                     </AnimatePresence>
                 )}
@@ -121,8 +134,8 @@ export function TaskBoard({
                             placeholder="Add a new task..."
                             className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-6 pr-28 py-4 text-base text-white placeholder-white/20 focus:outline-none focus:bg-white/[0.07] focus:border-white/20 transition-all font-light shadow-2xl"
                         />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                            {/* Date Picker Trigger (Simplified) */}
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
+                            {/* Date Picker Trigger */}
                             <div className="relative group">
                                 <input
                                     type="date"
@@ -130,25 +143,32 @@ export function TaskBoard({
                                     onChange={(e) => setNewTaskDate(e.target.value)}
                                     className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                                 />
-                                <Calendar size={16} className={clsx("transition-colors", newTaskDate ? "text-purple-400" : "text-white/40 group-hover:text-white")} />
+                                <div className={clsx("p-2 rounded-lg transition-all", newTaskDate ? "bg-purple-500/20 text-purple-300" : "hover:bg-white/5 text-white/40 group-hover:text-white")}>
+                                    <Calendar size={18} />
+                                </div>
                             </div>
 
-                            <div className="w-px h-4 bg-white/10 mx-1" />
+                            <div className="w-px h-4 bg-white/10" />
 
-                            <select
-                                value={newTaskPriority}
-                                onChange={(e) => setNewTaskPriority(e.target.value as Priority)}
-                                className="bg-transparent text-[10px] uppercase tracking-widest text-white/40 border-none focus:ring-0 cursor-pointer hover:text-white transition-colors appearance-none text-right pr-2 font-bold"
-                            >
-                                <option value="low" className="bg-black text-white">Low</option>
-                                <option value="medium" className="bg-black text-white">Medium</option>
-                                <option value="high" className="bg-black text-white">High</option>
-                            </select>
-                            <Flag size={14} className={clsx(
-                                "transition-colors duration-300",
-                                newTaskPriority === 'high' ? 'text-red-400 drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]' :
-                                    newTaskPriority === 'medium' ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]' : 'text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]'
-                            )} />
+                            <div className="relative group flex items-center">
+                                <select
+                                    value={newTaskPriority}
+                                    onChange={(e) => setNewTaskPriority(e.target.value as Priority)}
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                                >
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                                <div className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/5 transition-all text-sm font-medium uppercase tracking-wider text-white/60 group-hover:text-white cursor-pointer select-none">
+                                    <span className={clsx(
+                                        "w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]",
+                                        newTaskPriority === 'high' ? 'bg-red-500 text-red-500' :
+                                            newTaskPriority === 'medium' ? 'bg-amber-500 text-amber-500' : 'bg-blue-500 text-blue-500'
+                                    )} />
+                                    {newTaskPriority}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" className="p-4 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all border border-white/5 hover:border-white/10 shadow-xl group">

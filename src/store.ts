@@ -28,6 +28,7 @@ interface AppState {
     // Link Logic
     addLink: (title: string, url: string) => void;
     deleteLink: (id: string) => void;
+    reorderTasks: (newOrder: Task[]) => void;
 }
 
 // Custom storage wrapper for Chrome Storage Sync (with local fallback)
@@ -140,6 +141,8 @@ export const useStore = create<AppState>()(
             deleteTask: (id) => set((state) => ({
                 tasks: state.tasks.filter(t => t.id !== id)
             })),
+
+            reorderTasks: (newOrder) => set({ tasks: newOrder }),
         }),
         {
             name: 'team-todo-storage',

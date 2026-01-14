@@ -21,6 +21,25 @@ export function Settings({
 }: SettingsProps) {
     const backgrounds = [
         { name: 'Aurora', url: '/background.png' },
+        { name: 'Forest', url: 'https://images.unsplash.com/photo-1448375240586-dfd8d395ea6c?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Sunset', url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Ocean', url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Mountain', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'City', url: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Space', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Abstract', url: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Minimal', url: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Desert', url: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Rain', url: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Cyberpunk', url: 'https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Neon', url: 'https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Zen', url: 'https://images.unsplash.com/photo-1528360983277-13d9b152c6d4?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Snow', url: 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Library', url: 'https://images.unsplash.com/photo-1507842217121-9e9f14733ee5?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Coffee', url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Road', url: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2936&auto=format&fit=crop' },
+        { name: 'Sky', url: 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=2940&auto=format&fit=crop' },
+        { name: 'Geometric', url: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2940&auto=format&fit=crop' }
     ];
 
     return (

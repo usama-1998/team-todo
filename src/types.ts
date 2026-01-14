@@ -20,5 +20,4 @@ export interface Task {
     priority?: Priority;
     notes?: string;
     dueDate?: number; // timestamp
-    attachments?: Link[]; // Reusing Link interface for attachments
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trash2, CheckCircle2, Circle, X, Link as LinkIcon, Calendar, FileText, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { Trash2, CheckSquare, Square, X, Calendar, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import clsx from 'clsx';
@@ -17,9 +17,26 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
     const [notes, setNotes] = useState(task.notes || '');
     const [editingNotes, setEditingNotes] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showAddLink, setShowAddLink] = useState(false);
-    const [linkTitle, setLinkTitle] = useState('');
-    const [linkUrl, setLinkUrl] = useState('');
+
+    // Title Editing State
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState(task.title);
+
+    const handleTitleSave = () => {
+        if (editedTitle.trim() !== task.title && onUpdate) {
+            onUpdate({ title: editedTitle.trim() });
+            toast.success("Task updated");
+        }
+        setIsEditingTitle(false);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') handleTitleSave();
+        if (e.key === 'Escape') {
+            setEditedTitle(task.title);
+            setIsEditingTitle(false);
+        }
+    };
 
     // Priority styling
     const priorityConfig = {
@@ -81,33 +98,6 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
         }
     };
 
-    const handleAddAttachment = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!linkTitle || !linkUrl) return;
-
-        let finalUrl = linkUrl;
-        if (!linkUrl.startsWith('http')) finalUrl = `https://${linkUrl}`;
-
-        const newAttachment = { id: Date.now().toString(), title: linkTitle, url: finalUrl };
-        const attachments = [...(task.attachments || []), newAttachment];
-
-        if (onUpdate) {
-            onUpdate({ attachments });
-            toast.success('Link added');
-        }
-        setLinkTitle('');
-        setLinkUrl('');
-        setShowAddLink(false);
-    };
-
-    const handleRemoveAttachment = (id: string) => {
-        const attachments = (task.attachments || []).filter((a) => a.id !== id);
-        if (onUpdate) {
-            onUpdate({ attachments });
-            toast.success('Link removed');
-        }
-    };
-
     return (
         <motion.div
             layout
@@ -119,7 +109,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                 opacity: { duration: 0.2 }
             }}
             className={clsx(
-                "group rounded-2xl transition-all duration-300 relative glass-morphism-premium mb-3 overflow-hidden",
+                "group rounded-2xl transition-all duration-300 relative bg-white/5 hover:bg-white/10 border border-white/5 mb-3 overflow-hidden",
                 task.completed ? "opacity-60 saturate-50" : "opacity-100"
             )}
         >
@@ -142,21 +132,35 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                     onClick={(e) => { e.stopPropagation(); onToggle(); }}
                 >
                     {task.completed ? (
-                        <CheckCircle2 size={20} className="text-purple-400/80" />
+                        <CheckSquare size={20} className="text-purple-400/80" />
                     ) : (
-                        <Circle size={20} strokeWidth={1.5} className="group-hover:stroke-white transition-colors" />
+                        <Square size={20} strokeWidth={1.5} className="group-hover:stroke-white transition-colors" />
                     )}
                 </button>
 
                 {/* Task Content */}
                 <div className="flex-grow min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
-                        <span className={clsx(
-                            "text-[15px] font-light tracking-wide transition-all relative overflow-hidden inline-block",
-                            task.completed ? "text-white/20 animate-strike" : "text-white/90"
-                        )}>
-                            {task.title}
-                        </span>
+                        {isEditingTitle ? (
+                            <input
+                                autoFocus
+                                value={editedTitle}
+                                onChange={(e) => setEditedTitle(e.target.value)}
+                                onBlur={handleTitleSave}
+                                onKeyDown={handleKeyDown}
+                                onClick={(e) => e.stopPropagation()}
+                                className="bg-transparent border-b border-white/20 text-[15px] font-light tracking-wide text-white focus:outline-none focus:border-white/50 w-full min-w-[200px]"
+                            />
+                        ) : (
+                            <span
+                                onClick={(e) => { e.stopPropagation(); setIsEditingTitle(true); }}
+                                className={clsx(
+                                    "text-[15px] font-light tracking-wide transition-all relative overflow-hidden inline-block cursor-text hover:text-white/80",
+                                    task.completed ? "text-white/20 animate-strike" : "text-white/90"
+                                )}>
+                                {task.title}
+                            </span>
+                        )}
 
                         {/* Priority Dot/Badge */}
                         <div className={clsx(
@@ -189,13 +193,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                             </span>
                         )}
 
-                        {/* Attachments Count */}
-                        {task.attachments && task.attachments.length > 0 && (
-                            <span className="text-xs text-white/40 flex items-center gap-1">
-                                <LinkIcon size={12} />
-                                {task.attachments.length} link{task.attachments.length !== 1 ? 's' : ''}
-                            </span>
-                        )}
+
                     </div>
                 </div>
 
@@ -231,6 +229,32 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                         className="border-t border-white/5"
                     >
                         <div className="p-3 space-y-2">
+
+                            {/* Priority Selection */}
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-white/50 flex items-center gap-2">
+                                    <div className={clsx("w-3 h-3 rounded-full", config.dot)} />
+                                    Priority
+                                </span>
+                                <div className="flex bg-white/5 rounded-lg p-0.5" onClick={(e) => e.stopPropagation()}>
+                                    {(['low', 'medium', 'high'] as const).map((p) => (
+                                        <button
+                                            key={p}
+                                            onClick={() => onUpdate && onUpdate({ priority: p })}
+                                            className={clsx(
+                                                "px-3 py-1 text-xs uppercase tracking-wider font-medium rounded-md transition-all",
+                                                task.priority === p
+                                                    ? (p === 'high' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' :
+                                                        p === 'medium' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' :
+                                                            'bg-blue-500 text-white shadow-lg shadow-blue-500/20')
+                                                    : "text-white/40 hover:text-white hover:bg-white/5"
+                                            )}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
                             {/* Due Date Section */}
                             <div className="flex items-center justify-between">
@@ -273,12 +297,12 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                 </div>
                             </div>
 
-                            {/* Notes Section */}
+                            {/* Quick Note Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="text-sm text-white/50 flex items-center gap-2">
                                         <FileText size={16} />
-                                        Notes
+                                        Quick Note
                                     </span>
                                     {!editingNotes && task.notes && (
                                         <button
@@ -295,8 +319,8 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                         <textarea
                                             value={notes}
                                             onChange={(e) => setNotes(e.target.value)}
-                                            placeholder="Add notes to this task..."
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/20 resize-none min-h-[100px]"
+                                            placeholder="Add a quick note..."
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/20 resize-none min-h-[80px]"
                                             autoFocus
                                         />
                                         <div className="flex gap-2 justify-end">
@@ -326,94 +350,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                         onClick={(e) => { e.stopPropagation(); setEditingNotes(true); }}
                                         className="text-sm text-white/40 hover:text-white px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors w-full text-left"
                                     >
-                                        + Add notes...
-                                    </button>
-                                )}
-                            </div>
-
-                            {/* Attachments Section */}
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm text-white/50 flex items-center gap-2">
-                                        <LinkIcon size={16} />
-                                        Links & Documents
-                                    </span>
-                                </div>
-
-                                {/* Existing Attachments */}
-                                {task.attachments && task.attachments.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mb-2">
-                                        {task.attachments.map((attachment) => (
-                                            <div
-                                                key={attachment.id}
-                                                className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg group/link transition-colors"
-                                            >
-                                                <img
-                                                    src={`https://www.google.com/s2/favicons?sz=32&domain=${attachment.url}`}
-                                                    alt=""
-                                                    className="w-4 h-4 rounded-sm opacity-60"
-                                                />
-                                                <a
-                                                    href={attachment.url}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    className="text-sm text-white/70 hover:text-white flex items-center gap-1"
-                                                >
-                                                    {attachment.title}
-                                                    <ExternalLink size={12} className="opacity-50" />
-                                                </a>
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); handleRemoveAttachment(attachment.id); }}
-                                                    className="text-white/20 hover:text-red-400 opacity-0 group-hover/link:opacity-100 transition-opacity"
-                                                >
-                                                    <X size={14} />
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Add Link Form */}
-                                {showAddLink ? (
-                                    <form onSubmit={handleAddAttachment} className="space-y-2" onClick={(e) => e.stopPropagation()}>
-                                        <div className="flex gap-2">
-                                            <input
-                                                value={linkTitle}
-                                                onChange={(e) => setLinkTitle(e.target.value)}
-                                                placeholder="Link title"
-                                                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/20"
-                                                autoFocus
-                                            />
-                                            <input
-                                                value={linkUrl}
-                                                onChange={(e) => setLinkUrl(e.target.value)}
-                                                placeholder="URL"
-                                                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/20"
-                                            />
-                                        </div>
-                                        <div className="flex gap-2 justify-end">
-                                            <button
-                                                type="button"
-                                                onClick={() => { setLinkTitle(''); setLinkUrl(''); setShowAddLink(false); }}
-                                                className="text-xs text-white/40 hover:text-white px-3 py-1.5"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                className="text-xs bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-4 py-1.5 rounded-lg transition-colors"
-                                            >
-                                                Add Link
-                                            </button>
-                                        </div>
-                                    </form>
-                                ) : (
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); setShowAddLink(true); }}
-                                        className="text-sm text-white/40 hover:text-white px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors w-full text-left"
-                                    >
-                                        + Add link or document...
+                                        + Add quick note...
                                     </button>
                                 )}
                             </div>

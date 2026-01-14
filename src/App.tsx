@@ -32,6 +32,7 @@ function App() {
     setBackground,
     userName,
     setUserName,
+    reorderTasks,
   } = useStore();
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -137,6 +138,7 @@ function App() {
           toggleTask={toggleTask}
           deleteTask={deleteTask}
           updateTask={updateTask}
+          reorderTasks={reorderTasks}
         />
       </div>
 
