@@ -10,6 +10,7 @@ import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { TaskBoard } from './components/TaskBoard';
 import { Settings } from './components/Settings';
+import { OnboardingModal } from './components/OnboardingModal';
 
 function App() {
   const {
@@ -29,10 +30,14 @@ function App() {
     setActiveTab,
     background,
     setBackground,
+    userName,
+    setUserName,
   } = useStore();
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskPriority, setNewTaskPriority] = useState<Priority>('medium');
+  const [newTaskDate, setNewTaskDate] = useState<string>(''); // For date input
+
   const [newListTitle, setNewListTitle] = useState('');
   const [isAddingList, setIsAddingList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -51,27 +56,17 @@ function App() {
     return time.toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: true });
   };
 
-  // Weather State (Rahim Yar Khan)
-  const [weather, setWeather] = useState<{ temp: number, code: number } | null>(null);
-
-  useEffect(() => {
-    // Fetch weather for Rahim Yar Khan (Lat: 28.4212, Long: 70.2989)
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=28.4212&longitude=70.2989&current_weather=true')
-      .then(res => res.json())
-      .then(data => {
-        if (data.current_weather) {
-          setWeather({ temp: data.current_weather.temperature, code: data.current_weather.weathercode });
-        }
-      })
-      .catch(err => console.error("Weather fetch failed", err));
-  }, []);
-
   const handleAddTask = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!newTaskTitle.trim()) return;
-    addTask(newTaskTitle, newTaskPriority);
+
+    // Parse date if selected, otherwise undefined (store handles default to today)
+    const dueDate = newTaskDate ? new Date(newTaskDate).getTime() : undefined;
+
+    addTask(newTaskTitle, newTaskPriority, dueDate);
     setNewTaskTitle('');
-    setNewTaskPriority('medium'); // Reset
+    setNewTaskPriority('medium');
+    setNewTaskDate(''); // Reset date
     toast.success("Task added");
   };
 
@@ -84,19 +79,13 @@ function App() {
     toast.success(`List "${newListTitle}" created`);
   };
 
-  const handleSaveSettings = () => {
-    if (customBgUrl) {
-      setBackground(customBgUrl);
-      toast.success("Background updated");
-    }
-    setShowSettings(false);
-  };
-
   const hasLists = lists.length > 0;
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden flex flex-col items-center justify-center font-sans">
       <Toaster position="bottom-center" theme="dark" />
+
+      {!userName && <OnboardingModal onComplete={setUserName} />}
 
       {/* Background Image */}
       <div
@@ -104,8 +93,8 @@ function App() {
         style={{ backgroundImage: `url('${background}')` }}
       />
 
-      {/* Greeting Widget */}
-      <div className="relative z-10 mb-6 w-full max-w-4xl px-4 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
+      {/* Greeting Widget - Higher Z-Index for dropdowns */}
+      <div className="relative z-20 mb-6 w-full max-w-4xl px-4 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
         <Greeting />
         <QuickLinks links={links} onAdd={addLink} onDelete={deleteLink} />
       </div>
@@ -115,7 +104,6 @@ function App() {
         <Header
           pktTime={formatTimeKey('Asia/Karachi')}
           sgtTime={formatTimeKey('Asia/Singapore')}
-          weather={weather}
         />
 
         <Sidebar
@@ -137,10 +125,14 @@ function App() {
           newListTitle={newListTitle}
           setNewListTitle={setNewListTitle}
           handleAddList={handleAddList}
+
           newTaskTitle={newTaskTitle}
           setNewTaskTitle={setNewTaskTitle}
           newTaskPriority={newTaskPriority}
           setNewTaskPriority={setNewTaskPriority}
+          newTaskDate={newTaskDate}
+          setNewTaskDate={setNewTaskDate}
+
           handleAddTask={handleAddTask}
           toggleTask={toggleTask}
           deleteTask={deleteTask}
@@ -155,9 +147,7 @@ function App() {
         setBackground={setBackground}
         customBgUrl={customBgUrl}
         setCustomBgUrl={setCustomBgUrl}
-        handleSaveSettings={handleSaveSettings}
       />
-
     </div>
   );
 }

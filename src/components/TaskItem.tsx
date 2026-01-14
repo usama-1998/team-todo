@@ -118,7 +118,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className={clsx(
-                "group rounded-2xl transition-all duration-500 relative overflow-hidden glass-morphism-premium mb-3",
+                "group rounded-2xl transition-all duration-500 relative glass-morphism-premium mb-3 overflow-hidden", // ensuring overflow hidden clips the background to the border radius
                 task.priority && config.glow,
                 task.completed ? "opacity-60 saturate-50" : "opacity-100"
             )}

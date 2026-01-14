@@ -4,6 +4,7 @@ import type { Task, List, Link, Priority } from './types';
 import { v4 as uuidv4 } from 'uuid';
 
 interface AppState {
+    userName: string;
     tasks: Task[];
     lists: List[];
     links: Link[];
@@ -11,8 +12,9 @@ interface AppState {
     background: string;
 
     // Actions
+    setUserName: (name: string) => void;
     setActiveTab: (tab: string) => void;
-    addTask: (title: string, priority?: Priority) => void;
+    addTask: (title: string, priority?: Priority, dueDate?: number) => void;
     updateTask: (id: string, updates: Partial<Task>) => void;
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
@@ -56,15 +58,17 @@ const storage = {
 export const useStore = create<AppState>()(
     persist(
         (set, get) => ({
+            userName: '',
             tasks: [],
             lists: [],
             links: [
                 { id: 'l1', title: 'Google', url: 'https://google.com' },
                 { id: 'l2', title: 'YouTube', url: 'https://youtube.com' },
             ],
-            activeTab: '', // Start empty, will be handled by UI to show "Create First List"
+            activeTab: '', // Start empty
             background: '/background.png',
 
+            setUserName: (name) => set({ userName: name }),
             setActiveTab: (tab) => set({ activeTab: tab }),
             setBackground: (bg) => set({ background: bg }),
 
@@ -106,10 +110,8 @@ export const useStore = create<AppState>()(
                 set(state => ({ links: state.links.filter(l => l.id !== id) }));
             },
 
-            addTask: (title, priority = 'medium') => {
+            addTask: (title, priority = 'medium', dueDate) => {
                 const { activeTab } = get();
-                // If no active tab, we assume activeTab is valid listId
-
                 const listId = activeTab;
 
                 const newTask: Task = {
@@ -119,6 +121,7 @@ export const useStore = create<AppState>()(
                     listId,
                     createdAt: Date.now(),
                     priority,
+                    dueDate: dueDate || Date.now(), // Default to today if not provided
                 };
 
                 set((state) => ({ tasks: [newTask, ...state.tasks] }));

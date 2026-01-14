@@ -1,4 +1,4 @@
-import { Plus, Flag } from 'lucide-react';
+import { Plus, Flag, CheckCircle2, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TaskItem } from './TaskItem';
 import clsx from 'clsx';
@@ -17,6 +17,8 @@ interface TaskBoardProps {
     setNewTaskTitle: (title: string) => void;
     newTaskPriority: Priority;
     setNewTaskPriority: (priority: Priority) => void;
+    newTaskDate: string;
+    setNewTaskDate: (date: string) => void;
     handleAddTask: (e?: React.FormEvent) => void;
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
@@ -36,14 +38,26 @@ export function TaskBoard({
     setNewTaskTitle,
     newTaskPriority,
     setNewTaskPriority,
+    newTaskDate,
+    setNewTaskDate,
     handleAddTask,
     toggleTask,
     deleteTask,
     updateTask
 }: TaskBoardProps) {
-    const filteredTasks = tasks.filter(task => {
-        return task.listId === activeTab;
-    });
+
+    // Sort logic: High -> Medium -> Low, then by Date
+    const priorityWeight = { high: 3, medium: 2, low: 1 };
+
+    const filteredTasks = tasks
+        .filter(task => task.listId === activeTab)
+        .sort((a, b) => {
+            const weightA = priorityWeight[a.priority || 'medium'];
+            const weightB = priorityWeight[b.priority || 'medium'];
+
+            if (weightA !== weightB) return weightB - weightA; // Higher priority first
+            return (a.createdAt || 0) - (b.createdAt || 0); // Older tasks first (FIFO within priority)
+        });
 
     return (
         <>
@@ -83,8 +97,9 @@ export function TaskBoard({
                         {filteredTasks.length === 0 ? (
                             <motion.div
                                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                className="flex flex-col items-center justify-center h-40 text-white/30"
+                                className="flex flex-col items-center justify-center h-40 text-white/30 gap-3"
                             >
+                                <CheckCircle2 size={48} className="text-white/10" />
                                 <p className="font-light text-xl">All caught up</p>
                             </motion.div>
                         ) : (
@@ -104,9 +119,22 @@ export function TaskBoard({
                             value={newTaskTitle}
                             onChange={(e) => setNewTaskTitle(e.target.value)}
                             placeholder="Add a new task..."
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-6 pr-12 py-4 text-base text-white placeholder-white/20 focus:outline-none focus:bg-white/[0.07] focus:border-white/20 transition-all font-light shadow-2xl"
+                            className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-6 pr-28 py-4 text-base text-white placeholder-white/20 focus:outline-none focus:bg-white/[0.07] focus:border-white/20 transition-all font-light shadow-2xl"
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                            {/* Date Picker Trigger (Simplified) */}
+                            <div className="relative group">
+                                <input
+                                    type="date"
+                                    value={newTaskDate}
+                                    onChange={(e) => setNewTaskDate(e.target.value)}
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                                />
+                                <Calendar size={16} className={clsx("transition-colors", newTaskDate ? "text-purple-400" : "text-white/40 group-hover:text-white")} />
+                            </div>
+
+                            <div className="w-px h-4 bg-white/10 mx-1" />
+
                             <select
                                 value={newTaskPriority}
                                 onChange={(e) => setNewTaskPriority(e.target.value as Priority)}

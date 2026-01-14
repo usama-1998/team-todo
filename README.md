@@ -9,12 +9,14 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 - **Modular Architecture** - Refactored into specialized components for better maintainability and performance.
 - **Premium UI/UX** - Advanced glassmorphism design system using `backdrop-filter` and custom CSS design tokens.
 
+- **Personalized Onboarding** - Welcomes you by name on first launch, stored locally.
 - **Smart Lists** - Create, rename, and delete task lists with real-time updates.
-- **Task Priorities** - Visual priority badges (High/Medium/Low) with glowing effects and color coding.
-- **Due Dates** - Track deadlines with relative time display (Overdue, Due Today, Tomorrow).
+- **Task Priorities & Sorting** - Tasks sorted by Priority (High > Medium > Low) and then by Date.
+- **Due Dates** - Set due dates for tasks; defaults to "Today" if unspecified.
+- **Daily Progress** - Visual progress ring showing your completion rate for the day.
+- **Smart Backgrounds** - Choose presets or search online (powered by LoremFlickr) for any background image.
 - **Notes & Documents** - Rich task details with persistent notes and link attachments.
 - **Quick Links** - Customizable header bookmarks for frequently accessed sites.
-- **Live Weather** - Real-time weather integration for Rahim Yar Khan via Open-Meteo.
 - **Dual Timezone Clocks** - Instant view of PKT and SGT times.
 - **Micro-Animations** - Smooth transitions using Framer Motion for a premium native app feel.
 - **Persistence** - Automatic data sync via Chrome Storage Sync or LocalStorage fallback.
@@ -60,12 +62,12 @@ npm run build
 ## 📱 Component Structure
 
 The app is now organized into specialized components located in `src/components/`:
-- `Header.tsx` - Timezones & Weather
+- `Header.tsx` - Timezones & Daily Progress
 - `Sidebar.tsx` - List Navigation & Creation
 - `TaskBoard.tsx` - Main Task Interaction Area
 - `TaskItem.tsx` - Detailed Task Card logic
-- `Settings.tsx` - Customization & Backgrounds
-- ...and more refined sub-components.
+- `Settings.tsx` - Customization & Background Search
+- `OnboardingModal.tsx` - First-time user welcome screen
 
 ## 📄 License
 

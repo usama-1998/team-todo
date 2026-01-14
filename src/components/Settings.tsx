@@ -9,7 +9,6 @@ interface SettingsProps {
     setBackground: (bg: string) => void;
     customBgUrl: string;
     setCustomBgUrl: (url: string) => void;
-    handleSaveSettings: () => void;
 }
 
 export function Settings({
@@ -19,12 +18,9 @@ export function Settings({
     setBackground,
     customBgUrl,
     setCustomBgUrl,
-    handleSaveSettings
 }: SettingsProps) {
     const backgrounds = [
         { name: 'Aurora', url: '/background.png' },
-        { name: 'Sunset', url: '/bg-sunset.png' },
-        { name: 'Forest', url: '/bg-forest.png' },
     ];
 
     return (
@@ -50,7 +46,7 @@ export function Settings({
                         <div className="space-y-6">
                             <div>
                                 <label className="block text-sm font-medium text-white/60 mb-2">Background Image</label>
-                                <div className="grid grid-cols-3 gap-2 mb-3">
+                                <div className="grid grid-cols-2 gap-2 mb-3">
                                     {backgrounds.map(bg => (
                                         <button
                                             key={bg.name}
@@ -60,17 +56,31 @@ export function Settings({
                                         />
                                     ))}
                                 </div>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        value={customBgUrl}
-                                        onChange={e => setCustomBgUrl(e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-white/30 text-sm"
-                                        placeholder="Or enter Image URL..."
-                                    />
-                                    <button onClick={handleSaveSettings} className="bg-white/10 hover:bg-white/20 px-4 rounded-xl">
-                                        <LinkIcon size={18} />
-                                    </button>
+                                <div className="space-y-2">
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={customBgUrl}
+                                            onChange={e => setCustomBgUrl(e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-white/30 text-sm"
+                                            placeholder="Image URL or Search Term..."
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                if (customBgUrl.startsWith('http')) {
+                                                    setBackground(customBgUrl);
+                                                } else {
+                                                    setBackground(`https://loremflickr.com/1920/1080/${customBgUrl}`);
+                                                }
+                                                toast.success("Background updated");
+                                                setShowSettings(false);
+                                            }}
+                                            className="bg-white/10 hover:bg-white/20 px-4 rounded-xl"
+                                        >
+                                            <LinkIcon size={18} />
+                                        </button>
+                                    </div>
+                                    <p className="text-[10px] text-white/30 ml-2">Enter an image URL or a keyword (e.g. 'nature', 'city') to search.</p>
                                 </div>
                             </div>
                         </div>
