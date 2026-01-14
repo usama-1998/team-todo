@@ -25,19 +25,16 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
     const priorityConfig = {
         high: {
             badge: 'bg-red-500/10 text-red-400 border border-red-500/20',
-            glow: 'glow-high',
             dot: 'bg-red-500',
             label: 'High'
         },
         medium: {
             badge: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-            glow: 'glow-medium',
             dot: 'bg-amber-500',
             label: 'Medium'
         },
         low: {
             badge: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-            glow: 'glow-low',
             dot: 'bg-blue-500',
             label: 'Low'
         }
@@ -57,6 +54,8 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
         if (diffDays <= 7) return { text: `Due in ${diffDays} days`, color: 'text-green-400 bg-green-500/20' };
         return { text: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), color: 'text-white/60 bg-white/10' };
     };
+
+
 
     const handleSaveNotes = () => {
         if (onUpdate) {
@@ -112,14 +111,15 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ y: -2, scale: 1.005 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+            transition={{
+                layout: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 }
+            }}
             className={clsx(
-                "group rounded-2xl transition-all duration-500 relative glass-morphism-premium mb-3 overflow-hidden", // ensuring overflow hidden clips the background to the border radius
-                task.priority && config.glow,
+                "group rounded-2xl transition-all duration-300 relative glass-morphism-premium mb-3 overflow-hidden",
                 task.completed ? "opacity-60 saturate-50" : "opacity-100"
             )}
         >

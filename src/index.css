@@ -25,31 +25,21 @@
 }
 
 .glass-morphism-premium {
-  background: rgba(10, 10, 10, 0.4);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border: var(--border-premium);
-  box-shadow: var(--shadow-premium);
+  background: rgba(10, 10, 10, 0.3);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-morphism-premium:hover {
-  background: rgba(20, 20, 20, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+  background: rgba(20, 20, 20, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
-.glow-high {
-  box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), inset 0 0 20px rgba(239, 68, 68, 0.05);
-}
-
-.glow-medium {
-  box-shadow: 0 0 30px rgba(245, 158, 11, 0.1), inset 0 0 20px rgba(245, 158, 11, 0.05);
-}
-
-.glow-low {
-  box-shadow: 0 0 30px rgba(59, 130, 246, 0.1), inset 0 0 20px rgba(59, 130, 246, 0.05);
-}
+/* Glow classes removed for cleaner look */
 
 @keyframes strike {
   from {
