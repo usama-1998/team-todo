@@ -26,7 +26,9 @@ export function Popover({ isOpen, onClose, triggerRef, children, className = '',
             // Vertical alignment: Align top of popover with top of trigger
             // (Optional: Center vertically? Usually "left side" means side-by-side top aligned or centered)
             // Let's go with Top-Aligned for stability, or slightly adjusted if needed.
-            let top = rect.top;
+            // USER REQUEST: "move it a bit higher"
+            // Shifting up by 40px to give it a slight lift relative to the trigger
+            let top = rect.top - 40;
 
             // Horizontal alignment: 
             // Trigger Left Edge - some gap
