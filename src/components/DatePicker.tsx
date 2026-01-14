@@ -79,7 +79,10 @@ export function DatePicker({ selectedDate, onChange, onClose }: DatePickerProps)
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute top-full left-0 mt-2 w-[340px] bg-[#0A0A0A]/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-50 p-5 overflow-hidden ring-1 ring-white/5"
+            className={clsx(
+                "w-[340px] bg-[#0A0A0A]/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-5 overflow-hidden ring-1 ring-white/5",
+                // Allow parent to override/add positioning if needed, though we expect parent to wrap it
+            )}
             ref={containerRef}
             onClick={(e) => e.stopPropagation()}
         >

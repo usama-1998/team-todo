@@ -142,7 +142,7 @@ export function TaskBoard({
                             {/* Date Picker Trigger */}
                             <div className="relative">
                                 {showDatePicker ? (
-                                    <div className="absolute bottom-full mb-2 left-0 z-50">
+                                    <div className="absolute bottom-full mb-2 right-0 z-50">
                                         <DatePicker
                                             selectedDate={newTaskDate}
                                             onChange={(date) => {
