@@ -103,7 +103,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                 opacity: { duration: 0.2 }
             }}
             className={clsx(
-                "group rounded-2xl transition-all duration-300 relative bg-white/5 hover:bg-white/10 border border-white/5 mb-3 overflow-hidden",
+                "group rounded-2xl transition-all duration-300 relative bg-white/5 hover:bg-white/10 border border-white/5 mb-3",
                 task.completed ? "opacity-60 saturate-50" : "opacity-100"
             )}
         >
@@ -257,20 +257,22 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                     Due Date
                                 </span>
                                 <div className="flex items-center gap-2">
-                                    <div className="relative">
+                                    <div className="relative z-50">
                                         {showDatePicker ? (
-                                            <DatePicker
-                                                selectedDate={task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}
-                                                onChange={(dateStr) => {
-                                                    if (onUpdate) {
-                                                        const date = dateStr ? new Date(dateStr) : undefined;
-                                                        onUpdate({ dueDate: date ? date.getTime() : undefined });
-                                                        toast.success(date ? 'Due date set' : 'Due date removed');
-                                                    }
-                                                    setShowDatePicker(false);
-                                                }}
-                                                onClose={() => setShowDatePicker(false)}
-                                            />
+                                            <div className="absolute bottom-full mb-2 left-0 z-50">
+                                                <DatePicker
+                                                    selectedDate={task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}
+                                                    onChange={(dateStr) => {
+                                                        if (onUpdate) {
+                                                            const date = dateStr ? new Date(dateStr) : undefined;
+                                                            onUpdate({ dueDate: date ? date.getTime() : undefined });
+                                                            toast.success(date ? 'Due date set' : 'Due date removed');
+                                                        }
+                                                        setShowDatePicker(false);
+                                                    }}
+                                                    onClose={() => setShowDatePicker(false)}
+                                                />
+                                            </div>
                                         ) : task.dueDate ? (
                                             <div className="flex items-center gap-2">
                                                 <button

@@ -1,6 +1,8 @@
-import { Plus, CheckCircle2, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, CheckCircle2, Calendar, X } from 'lucide-react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { TaskItem } from './TaskItem';
+import { DatePicker } from './DatePicker';
 import clsx from 'clsx';
 import type { Task, Priority } from '../types';
 
@@ -47,6 +49,7 @@ export function TaskBoard({
     updateTask,
     reorderTasks
 }: TaskBoardProps) {
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     // Data filtered by list, but NOT sorted automatically to preserve drag-and-drop order
     const filteredTasks = tasks.filter(task => task.listId === activeTab);
@@ -136,16 +139,45 @@ export function TaskBoard({
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
                             {/* Date Picker Trigger */}
-                            <div className="relative group">
-                                <input
-                                    type="date"
-                                    value={newTaskDate}
-                                    onChange={(e) => setNewTaskDate(e.target.value)}
-                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                                />
-                                <div className={clsx("p-2 rounded-lg transition-all", newTaskDate ? "bg-purple-500/20 text-purple-300" : "hover:bg-white/5 text-white/40 group-hover:text-white")}>
+                            {/* Date Picker Trigger */}
+                            <div className="relative">
+                                {showDatePicker ? (
+                                    <div className="absolute bottom-full mb-2 left-0 z-50">
+                                        <DatePicker
+                                            selectedDate={newTaskDate}
+                                            onChange={(date) => {
+                                                setNewTaskDate(date);
+                                                setShowDatePicker(false);
+                                            }}
+                                            onClose={() => setShowDatePicker(false)}
+                                        />
+                                    </div>
+                                ) : null}
+
+                                <button
+                                    type="button"
+                                    onClick={() => setShowDatePicker(!showDatePicker)}
+                                    className={clsx(
+                                        "p-2 rounded-lg transition-all flex items-center gap-2",
+                                        newTaskDate ? "bg-purple-500/20 text-purple-300" : "hover:bg-white/5 text-white/40 hover:text-white"
+                                    )}
+                                >
                                     <Calendar size={18} />
-                                </div>
+                                    {newTaskDate && (
+                                        <span className="text-xs font-medium">
+                                            {new Date(newTaskDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                        </span>
+                                    )}
+                                </button>
+                                {newTaskDate && (
+                                    <button
+                                        type="button"
+                                        onClick={(e) => { e.stopPropagation(); setNewTaskDate(''); }}
+                                        className="absolute -top-1 -right-1 bg-red-500/80 text-white rounded-full p-0.5 hover:bg-red-500 transition-colors"
+                                    >
+                                        <X size={10} />
+                                    </button>
+                                )}
                             </div>
 
                             <div className="w-px h-4 bg-white/10" />
