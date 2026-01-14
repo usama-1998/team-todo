@@ -20,45 +20,30 @@ export function Popover({ isOpen, onClose, triggerRef, children, className = '',
         const updatePosition = () => {
             if (!triggerRef.current) return;
             const rect = triggerRef.current.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            const popoverHeight = 350; // Estimated height
 
-            // Default: Placement ABOVE the trigger
-            // Start at the top of the trigger
-            let top = rect.top - 8;
-            // Move up by 100% of popover height
-            let yTransform = '-100%';
-            let transformOrigin = 'bottom';
+            // STRICT REQUEST: "Left side of the date"
 
-            // Horizontal Alignment Logic
-            let left = rect.left;
-            let xTransform = '0%';
-            let horizontalOrigin = 'left';
+            // Vertical alignment: Align top of popover with top of trigger
+            // (Optional: Center vertically? Usually "left side" means side-by-side top aligned or centered)
+            // Let's go with Top-Aligned for stability, or slightly adjusted if needed.
+            let top = rect.top;
 
-            if (align === 'center') {
-                left = rect.left + rect.width / 2;
-                xTransform = '-50%';
-                horizontalOrigin = 'center';
-            } else if (align === 'end') {
-                left = rect.right;
-                xTransform = '-100%';
-                horizontalOrigin = 'right';
-            }
+            // Horizontal alignment: 
+            // Trigger Left Edge - some gap
+            let left = rect.left - 8;
 
-            transformOrigin = `${transformOrigin} ${horizontalOrigin}`;
+            // Transform: Move it 100% of its own width to the left so it sits *before* the trigger
+            let xTransform = '-100%';
+            let yTransform = '0%';
 
-            // Collision Detection
-            // If space above is insufficient (top - popoverHeight < 0 approx, or just check rect.top)
-            // AND there is enough space below...
-            const spaceAbove = rect.top;
-            const spaceBelow = viewportHeight - rect.bottom;
+            const transformOrigin = 'top right';
 
-            if (spaceAbove < popoverHeight && spaceBelow > popoverHeight) {
-                // Flip to BELOW
-                top = rect.bottom + 8;
-                yTransform = '0%';
-                transformOrigin = transformOrigin.replace('bottom', 'top');
-            }
+            // Collision check (Basic):
+            // If it goes off the left edge (left < width?), we might simple stick to this for now as requested.
+            // If screen is too narrow (mobile), "Left" might be bad.
+            // However, user specifically asked for "Left side". 
+            // Mobile consideration: If window.innerWidth < 768, maybe keep it centered/modal?
+            // For this specific request, I will enforce Left.
 
             setStyle({
                 top: `${top}px`,
