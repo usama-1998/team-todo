@@ -127,7 +127,7 @@ export const useStore = create<AppState>()(
                 // we assume activeTab is valid listId or 'For Usama'
 
                 let assignedTo = currentUser.id;
-                let listId = activeTab;
+                const listId = activeTab;
 
                 if (currentUser.role === 'HAMZA' && activeTab === 'For Usama') {
                     assignedTo = USAMA.id;

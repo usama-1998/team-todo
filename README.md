@@ -1,21 +1,23 @@
 # Team Todo
 
-A beautiful, modern task management app built with React, TypeScript, and Vite. Features a stunning glassmorphic UI with Chrome extension support for synced data.
+A beautiful, modern, and highly modular task management app built with React, TypeScript, and Vite. Features a stunning premium glassmorphic UI with smart list management and persistent storage.
 
 ![Team Todo](public/background.png)
 
 ## ✨ Features
 
-- **Multi-user Support** - Switch between team members (Hamza & Usama)
-- **Smart Lists** - Create, rename, and delete task lists
-- **Task Priorities** - Visual priority badges (High/Medium/Low) with color coding
-- **Due Dates** - Set and track due dates with smart relative display (overdue, due today, etc.)
-- **Notes & Documents** - Add detailed notes and link attachments to any task
-- **Quick Links** - Save frequently used links in the header
-- **Live Weather** - Current weather display for Rahim Yar Khan
-- **Dual Timezone Clocks** - PKT and SGT time display
-- **Beautiful Backgrounds** - Multiple background options with custom URL support
-- **Chrome Sync** - Data syncs via Chrome Storage when used as extension
+- **Modular Architecture** - Refactored into specialized components for better maintainability and performance.
+- **Premium UI/UX** - Advanced glassmorphism design system using `backdrop-filter` and custom CSS design tokens.
+- **Multi-user Support** - Switch between team members (Hamza & Usama) with specific task assignments.
+- **Smart Lists** - Create, rename, and delete task lists with real-time updates.
+- **Task Priorities** - Visual priority badges (High/Medium/Low) with glowing effects and color coding.
+- **Due Dates** - Track deadlines with relative time display (Overdue, Due Today, Tomorrow).
+- **Notes & Documents** - Rich task details with persistent notes and link attachments.
+- **Quick Links** - Customizable header bookmarks for frequently accessed sites.
+- **Live Weather** - Real-time weather integration for Rahim Yar Khan via Open-Meteo.
+- **Dual Timezone Clocks** - Instant view of PKT and SGT times.
+- **Micro-Animations** - Smooth transitions using Framer Motion for a premium native app feel.
+- **Persistence** - Automatic data sync via Chrome Storage Sync or LocalStorage fallback.
 
 ## 🚀 Getting Started
 
@@ -47,29 +49,23 @@ npm run build
 ## 🛠️ Tech Stack
 
 - **React 19** - UI Framework
-- **TypeScript** - Type Safety
-- **Vite** - Build Tool
-- **Tailwind CSS** - Styling
-- **Zustand** - State Management
-- **Framer Motion** - Animations
-- **Sonner** - Toast Notifications
-- **Lucide React** - Icons
+- **TypeScript** - Type Safety & Developer Experience
+- **Vite** - Lightning-fast Build Tool
+- **Tailwind CSS** - Modern Design System
+- **Zustand** - Global State Management with Persistence
+- **Framer Motion** - Fluid Animations & Micro-interactions
+- **Sonner** - Elegant Toast Notifications
+- **Lucide React** - Beautiful, consistent Iconography
 
-## 📱 Usage
+## 📱 Component Structure
 
-1. **Create a List** - Click the + button to create your first task list
-2. **Add Tasks** - Type in the input field and select priority
-3. **Expand Tasks** - Hover and click the chevron to expand task details
-4. **Add Notes** - Click "Add notes..." to add detailed information
-5. **Set Due Dates** - Click "Add date" to set a due date
-6. **Add Links** - Attach relevant URLs/documents to tasks
-7. **Switch Users** - Click user dropdown in bottom right to switch
-
-## 🎨 Customization
-
-Access Settings (bottom right) to:
-- Choose from preset backgrounds (Aurora, Sunset, Forest)
-- Set a custom background via URL
+The app is now organized into specialized components located in `src/components/`:
+- `Header.tsx` - Timezones & Weather
+- `Sidebar.tsx` - List Navigation & Creation
+- `TaskBoard.tsx` - Main Task Interaction Area
+- `TaskItem.tsx` - Detailed Task Card logic
+- `Settings.tsx` - Customization & User Switching
+- ...and more refined sub-components.
 
 ## 📄 License
 
