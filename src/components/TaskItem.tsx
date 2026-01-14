@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Trash2, CheckSquare, Square, X, Calendar, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 import type { Task } from '../types';
 import { DatePicker } from './DatePicker';
+import { Popover } from './Popover';
 
 interface TaskItemProps {
     task: Task;
@@ -18,6 +19,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
     const [notes, setNotes] = useState(task.notes || '');
     const [editingNotes, setEditingNotes] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const datePickerTriggerRef = useRef<HTMLDivElement>(null);
 
     // Title Editing State
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -257,23 +259,28 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                     Due Date
                                 </span>
                                 <div className="flex items-center gap-2">
-                                    <div className="relative z-50">
-                                        {showDatePicker ? (
-                                            <div className="absolute bottom-full mb-2 left-0 z-50">
-                                                <DatePicker
-                                                    selectedDate={task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}
-                                                    onChange={(dateStr) => {
-                                                        if (onUpdate) {
-                                                            const date = dateStr ? new Date(dateStr) : undefined;
-                                                            onUpdate({ dueDate: date ? date.getTime() : undefined });
-                                                            toast.success(date ? 'Due date set' : 'Due date removed');
-                                                        }
-                                                        setShowDatePicker(false);
-                                                    }}
-                                                    onClose={() => setShowDatePicker(false)}
-                                                />
-                                            </div>
-                                        ) : task.dueDate ? (
+                                    <div className="relative" ref={datePickerTriggerRef}>
+                                        <Popover
+                                            isOpen={showDatePicker}
+                                            onClose={() => setShowDatePicker(false)}
+                                            triggerRef={datePickerTriggerRef}
+                                            align="end"
+                                        >
+                                            <DatePicker
+                                                selectedDate={task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''}
+                                                onChange={(dateStr) => {
+                                                    if (onUpdate) {
+                                                        const date = dateStr ? new Date(dateStr) : undefined;
+                                                        onUpdate({ dueDate: date ? date.getTime() : undefined });
+                                                        toast.success(date ? 'Due date set' : 'Due date removed');
+                                                    }
+                                                    setShowDatePicker(false);
+                                                }}
+                                                onClose={() => setShowDatePicker(false)}
+                                            />
+                                        </Popover>
+
+                                        {task.dueDate ? (
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); setShowDatePicker(true); }}
