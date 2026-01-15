@@ -25,6 +25,14 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(task.title);
 
+// Toast logic wrapper
+    const handleToggle = () => {
+        if (!task.completed) {
+            toast.success("Task completed! 🎉");
+        }
+        onToggle();
+    };
+
     const handleTitleSave = () => {
         if (editedTitle.trim() !== task.title && onUpdate) {
             onUpdate({ title: editedTitle.trim() });
@@ -106,7 +114,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
             }}
             className={clsx(
                 "group rounded-2xl transition-all duration-300 relative bg-white/5 hover:bg-white/10 border border-white/5 mb-3",
-                task.completed ? "opacity-60 saturate-50" : "opacity-100"
+                task.completed ? "opacity-50 grayscale bg-white/5 border-transparent" : "opacity-100 bg-white/10 border-white/10"
             )}
         >
             {/* Task Completion Progress Bar (subtle) */}
@@ -120,15 +128,17 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
             {/* Main Task Row */}
             <div
                 className="flex items-center gap-3 p-3 cursor-pointer"
-                onClick={onToggle}
+                onClick={handleToggle}
             >
                 {/* Checkbox */}
                 <button
                     className="text-white/40 group-hover:text-purple-400 transition-colors shrink-0"
-                    onClick={(e) => { e.stopPropagation(); onToggle(); }}
+                    onClick={(e) => { e.stopPropagation(); handleToggle(); }}
                 >
                     {task.completed ? (
-                        <CheckSquare size={20} className="text-purple-400/80" />
+                        <div className="bg-purple-500/20 p-1 rounded-md">
+                            <CheckSquare size={18} className="text-purple-400" />
+                        </div>
                     ) : (
                         <Square size={20} strokeWidth={1.5} className="group-hover:stroke-white transition-colors" />
                     )}
@@ -152,7 +162,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                                 onClick={(e) => { e.stopPropagation(); setIsEditingTitle(true); }}
                                 className={clsx(
                                     "text-[15px] font-light tracking-wide transition-all relative overflow-hidden inline-block cursor-text hover:text-white/80",
-                                    task.completed ? "text-white/20 animate-strike" : "text-white/90"
+                                    task.completed ? "text-white/30 animate-strike font-medium" : "text-white/90"
                                 )}>
                                 {task.title}
                             </span>
