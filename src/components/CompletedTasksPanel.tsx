@@ -26,11 +26,11 @@ export function CompletedTasksPanel({ isOpen, onClose, tasks, onToggle, onDelete
 
                     {/* Side Panel */}
                     <motion.div
-                        initial={{ x: '100%', opacity: 0.5 }}
+                        initial={{ x: '-100%', opacity: 0.5 }}
                         animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: '100%', opacity: 0 }}
+                        exit={{ x: '-100%', opacity: 0 }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="absolute right-0 top-0 bottom-0 w-96 bg-[#0a0a0a] border-l border-white/10 z-50 rounded-r-[2rem] overflow-hidden flex flex-col shadow-2xl"
+                        className="absolute left-0 top-0 bottom-0 w-96 backdrop-blur-2xl bg-black/40 border-r border-white/10 z-50 rounded-r-[2rem] overflow-hidden flex flex-col shadow-2xl"
                     >
                         {/* Header */}
                         <div className="p-6 border-b border-white/5 flex items-center justify-between">
