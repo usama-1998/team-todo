@@ -25,7 +25,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(task.title);
 
-// Toast logic wrapper
+    // Toast logic wrapper
     const handleToggle = () => {
         if (!task.completed) {
             toast.success("Task completed! 🎉");
@@ -117,14 +117,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate }: TaskItemProps) 
                 task.completed ? "opacity-50 grayscale bg-white/5 border-transparent" : "opacity-100 bg-white/10 border-white/10"
             )}
         >
-            {/* Task Completion Progress Bar (subtle) */}
-            {task.completed && (
-                <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: '100%' }}
-                    className="absolute top-0 left-0 h-[2px] bg-gradient-to-r from-purple-500/50 to-blue-500/50 z-10"
-                />
-            )}
+
             {/* Main Task Row */}
             <div
                 className="flex items-center gap-3 p-3 cursor-pointer"
