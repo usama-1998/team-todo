@@ -153,7 +153,7 @@ function App() {
         tasks={tasks.filter(t => t.listId === activeTab && t.completed)}
         onToggle={(id) => {
           toggleTask(id);
-          // Optionally close panel or keep open? User request didn't specify. Keeping open logic.
+          toast.success("Task restored");
         }}
         onDelete={deleteTask}
       />

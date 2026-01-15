@@ -1,4 +1,4 @@
-import { X, CheckSquare, Trash2, Calendar } from 'lucide-react';
+import { X, RotateCcw, Trash2, Calendar, CheckSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Task } from '../types';
 
@@ -64,10 +64,10 @@ export function CompletedTasksPanel({ isOpen, onClose, tasks, onToggle, onDelete
                                             <div className="flex items-start gap-3">
                                                 <button
                                                     onClick={() => onToggle(task.id)}
-                                                    className="mt-1 text-purple-400 hover:text-purple-300 transition-colors"
-                                                    title="Mark as incomplete"
+                                                    className="mt-1 text-green-400 hover:text-green-300 transition-colors"
+                                                    title="Restore task"
                                                 >
-                                                    <CheckSquare size={18} />
+                                                    <RotateCcw size={18} />
                                                 </button>
                                                 <div className="flex-1 min-w-0">
                                                     <p className="text-white/50 line-through text-sm">{task.title}</p>
