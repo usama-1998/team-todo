@@ -9,6 +9,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 ### Recent Updates
 - **Enhanced Task Completion UI**: Completed tasks now feature a refined look with opacity reduction, grayscale effect, and smooth strikethrough animation.
 - **Toast Notifications**: Added toast notifications using `sonner` for immediate feedback when completing tasks.
+- **Show/Hide Completed Tasks**: Toggle visibility of completed tasks with a simple eye icon in the list header.
 
 - **Modular Architecture** - Refactored into specialized components for better maintainability and performance.
 - **Premium UI/UX** - Advanced glassmorphism design system using `backdrop-filter` and custom CSS design tokens.

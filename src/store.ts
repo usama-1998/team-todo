@@ -10,9 +10,11 @@ interface AppState {
     links: Link[];
     activeTab: string;
     background: string;
+    showCompleted: boolean;
 
     // Actions
     setUserName: (name: string) => void;
+    toggleShowCompleted: () => void;
     setActiveTab: (tab: string) => void;
     addTask: (title: string, priority?: Priority, dueDate?: number) => void;
     updateTask: (id: string, updates: Partial<Task>) => void;
@@ -68,10 +70,12 @@ export const useStore = create<AppState>()(
             ],
             activeTab: '', // Start empty
             background: '/background.png',
+            showCompleted: false, // Default hidden
 
             setUserName: (name) => set({ userName: name }),
             setActiveTab: (tab) => set({ activeTab: tab }),
             setBackground: (bg) => set({ background: bg }),
+            toggleShowCompleted: () => set((state) => ({ showCompleted: !state.showCompleted })),
 
             addList: (name) => {
                 const newList: List = {

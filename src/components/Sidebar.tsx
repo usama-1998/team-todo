@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Eye, EyeOff } from 'lucide-react';
 import { TabButton } from './TabButton';
 import type { List, Task } from '../types';
 interface SidebarProps {
@@ -10,6 +10,8 @@ interface SidebarProps {
     deleteList: (id: string) => void;
     renameList: (id: string, name: string) => void;
     addList: (name: string) => void;
+    showCompleted: boolean;
+    toggleShowCompleted: () => void;
 }
 
 export function Sidebar({
@@ -19,7 +21,9 @@ export function Sidebar({
     setActiveTab,
     deleteList,
     renameList,
-    addList
+    addList,
+    showCompleted,
+    toggleShowCompleted
 }: SidebarProps) {
     const [isAddingList, setIsAddingList] = useState(false);
     const [newListTitle, setNewListTitle] = useState('');
@@ -37,8 +41,8 @@ export function Sidebar({
     if (!hasLists) return null;
 
     return (
-        <div className="flex items-start justify-between mb-4 w-full sticky top-0 z-20">
-            <div className="flex flex-wrap items-center gap-3 w-full">
+        <div className="flex items-start justify-between mb-4 w-full sticky top-0 z-20 gap-4">
+            <div className="flex flex-wrap items-center gap-3 flex-1">
                 {lists.map(list => (
                     <TabButton
                         key={list.id}
@@ -75,6 +79,20 @@ export function Sidebar({
                     )}
                 </div>
             </div>
+
+            {hasLists && (
+                <button
+                    onClick={toggleShowCompleted}
+                    className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors group shrink-0"
+                    title={showCompleted ? "Hide completed tasks" : "Show completed tasks"}
+                >
+                    {showCompleted ? (
+                        <Eye size={20} className="text-white/40 group-hover:text-white transition-colors" />
+                    ) : (
+                        <EyeOff size={20} className="text-white/40 group-hover:text-white transition-colors" />
+                    )}
+                </button>
+            )}
         </div>
     );
 }

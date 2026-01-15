@@ -33,6 +33,8 @@ function App() {
     userName,
     setUserName,
     reorderTasks,
+    showCompleted,
+    toggleShowCompleted,
   } = useStore();
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -115,6 +117,8 @@ function App() {
           deleteList={deleteList}
           renameList={renameList}
           addList={addList}
+          showCompleted={showCompleted}
+          toggleShowCompleted={toggleShowCompleted}
         />
 
         <TaskBoard
@@ -139,6 +143,7 @@ function App() {
           deleteTask={deleteTask}
           updateTask={updateTask}
           reorderTasks={reorderTasks}
+          showCompleted={showCompleted}
         />
       </div>
 
