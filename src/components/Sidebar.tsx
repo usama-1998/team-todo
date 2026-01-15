@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Eye, EyeOff } from 'lucide-react';
+import { Plus, History } from 'lucide-react';
 import { TabButton } from './TabButton';
 import type { List, Task } from '../types';
 interface SidebarProps {
@@ -47,7 +47,7 @@ export function Sidebar({
                     <TabButton
                         key={list.id}
                         label={list.name}
-                        count={tasks.filter(t => t.listId === list.id).length}
+                        count={tasks.filter(t => t.listId === list.id && !t.completed).length}
                         active={activeTab === list.id}
                         onClick={() => setActiveTab(list.id)}
                         onDelete={() => deleteList(list.id)}
@@ -84,13 +84,9 @@ export function Sidebar({
                 <button
                     onClick={toggleShowCompleted}
                     className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors group shrink-0"
-                    title={showCompleted ? "Hide completed tasks" : "Show completed tasks"}
+                    title={showCompleted ? "Hide history" : "Show completed tasks"}
                 >
-                    {showCompleted ? (
-                        <Eye size={20} className="text-white/40 group-hover:text-white transition-colors" />
-                    ) : (
-                        <EyeOff size={20} className="text-white/40 group-hover:text-white transition-colors" />
-                    )}
+                    <History size={20} className={showCompleted ? "text-purple-400" : "text-white/40 group-hover:text-white"} />
                 </button>
             )}
         </div>

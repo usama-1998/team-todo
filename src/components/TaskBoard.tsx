@@ -47,14 +47,13 @@ export function TaskBoard({
     toggleTask,
     deleteTask,
     updateTask,
-    reorderTasks,
-    showCompleted
-}: TaskBoardProps & { showCompleted: boolean }) {
+    reorderTasks
+}: TaskBoardProps) {
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     // Data filtered by list, but NOT sorted automatically to preserve drag-and-drop order
     const filteredTasks = tasks.filter(task =>
-        task.listId === activeTab && (showCompleted || !task.completed)
+        task.listId === activeTab && !task.completed
     );
 
     // Handler for reordering

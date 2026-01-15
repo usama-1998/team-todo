@@ -11,6 +11,7 @@ import { Sidebar } from './components/Sidebar';
 import { TaskBoard } from './components/TaskBoard';
 import { Settings } from './components/Settings';
 import { OnboardingModal } from './components/OnboardingModal';
+import { CompletedTasksPanel } from './components/CompletedTasksPanel';
 
 function App() {
   const {
@@ -143,9 +144,19 @@ function App() {
           deleteTask={deleteTask}
           updateTask={updateTask}
           reorderTasks={reorderTasks}
-          showCompleted={showCompleted}
         />
       </div>
+
+      <CompletedTasksPanel
+        isOpen={showCompleted}
+        onClose={toggleShowCompleted}
+        tasks={tasks.filter(t => t.listId === activeTab && t.completed)}
+        onToggle={(id) => {
+          toggleTask(id);
+          // Optionally close panel or keep open? User request didn't specify. Keeping open logic.
+        }}
+        onDelete={deleteTask}
+      />
 
       <Settings
         showSettings={showSettings}
