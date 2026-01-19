@@ -11,6 +11,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 - **Toast Notifications**: Added toast notifications using `sonner` for immediate feedback when completing tasks.
 - **Completed Tasks Side Panel**: Access specific task history in a dedicated glassmorphic slide-over panel on the left, with an intuitive "Restore" option.
 - **Improved Task Counts**: Tab counters now reflect only active tasks, ignoring completed ones.
+- **Drag & Drop**: Move tasks between lists and reorder them with ease.
 
 - **Modular Architecture** - Refactored into specialized components for better maintainability and performance.
 - **Premium UI/UX** - Advanced glassmorphism design system using `backdrop-filter` and custom CSS design tokens.

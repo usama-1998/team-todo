@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, CheckCircle2, Calendar, X } from 'lucide-react';
-import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TaskItem } from './TaskItem';
 import { DatePicker } from './DatePicker';
 import clsx from 'clsx';
@@ -25,7 +26,6 @@ interface TaskBoardProps {
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
     updateTask: (id: string, updates: Partial<Task>) => void;
-    reorderTasks: (newOrder: Task[]) => void;
 }
 
 export function TaskBoard({
@@ -46,8 +46,7 @@ export function TaskBoard({
     handleAddTask,
     toggleTask,
     deleteTask,
-    updateTask,
-    reorderTasks
+    updateTask
 }: TaskBoardProps) {
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -56,22 +55,6 @@ export function TaskBoard({
         task.listId === activeTab && !task.completed
     );
 
-    // Handler for reordering
-    const handleReorder = (newOrder: Task[]) => {
-        // We need to merge the new order of *filtered* tasks back into the full *tasks* array
-        // This is a bit tricky because 'tasks' contains tasks from ALL lists.
-        // Strategy: Create a Map of the new order indices for the active list, 
-        // then reconstruct the full list.
-        // SIMPLER STRATEGY for local state: Just call reorderTasks with the full list constructed appropriately.
-        // Actually, Reorder.Group expects the full array it renders.
-
-        // For simplicity in this specific "per-list" view, relying on the 'filteredTasks' for the Reorder.Group
-        // When 'onReorder' is called, it gives us the new order of 'filteredTasks'.
-        // We need to update the global 'tasks' state.
-
-        const otherTasks = tasks.filter(task => task.listId !== activeTab);
-        reorderTasks([...newOrder, ...otherTasks]);
-    };
 
     return (
         <>
@@ -117,13 +100,19 @@ export function TaskBoard({
                                 <p className="font-light text-xl">All caught up</p>
                             </motion.div>
                         ) : (
-                            <Reorder.Group axis="y" values={filteredTasks} onReorder={handleReorder} className="space-y-3">
-                                {filteredTasks.map(task => (
-                                    <Reorder.Item key={task.id} value={task} className="cursor-grab active:cursor-grabbing">
-                                        <TaskItem task={task} onToggle={() => toggleTask(task.id)} onDelete={() => deleteTask(task.id)} onUpdate={(updates) => updateTask(task.id, updates)} />
-                                    </Reorder.Item>
-                                ))}
-                            </Reorder.Group>
+                            <SortableContext items={filteredTasks} strategy={verticalListSortingStrategy}>
+                                <div className="space-y-3">
+                                    {filteredTasks.map(task => (
+                                        <TaskItem
+                                            key={task.id}
+                                            task={task}
+                                            onToggle={() => toggleTask(task.id)}
+                                            onDelete={() => deleteTask(task.id)}
+                                            onUpdate={(updates) => updateTask(task.id, updates)}
+                                        />
+                                    ))}
+                                </div>
+                            </SortableContext>
                         )}
                     </AnimatePresence>
                 )}

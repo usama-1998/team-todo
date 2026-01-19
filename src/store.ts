@@ -20,6 +20,7 @@ interface AppState {
     updateTask: (id: string, updates: Partial<Task>) => void;
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
+    moveTask: (taskId: string, targetListId: string) => void;
     setBackground: (bg: string) => void;
 
     // List Logic
@@ -147,6 +148,10 @@ export const useStore = create<AppState>()(
             })),
 
             reorderTasks: (newOrder) => set({ tasks: newOrder }),
+            
+            moveTask: (taskId, targetListId) => set((state) => ({
+                tasks: state.tasks.map(t => t.id === taskId ? { ...t, listId: targetListId } : t)
+            })),
         }),
         {
             name: 'team-todo-storage',

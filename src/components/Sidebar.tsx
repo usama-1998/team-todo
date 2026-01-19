@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, History } from 'lucide-react';
 import { TabButton } from './TabButton';
+import { useDroppable } from '@dnd-kit/core';
 import type { List, Task } from '../types';
 interface SidebarProps {
     lists: List[];
@@ -44,15 +45,16 @@ export function Sidebar({
         <div className="flex items-start justify-between mb-4 w-full sticky top-0 z-20 gap-4">
             <div className="flex flex-wrap items-center gap-3 flex-1">
                 {lists.map(list => (
-                    <TabButton
-                        key={list.id}
-                        label={list.name}
-                        count={tasks.filter(t => t.listId === list.id && !t.completed).length}
-                        active={activeTab === list.id}
-                        onClick={() => setActiveTab(list.id)}
-                        onDelete={() => deleteList(list.id)}
-                        onRename={(name) => renameList(list.id, name)}
-                    />
+                    <DroppableTab key={list.id} id={list.id}>
+                        <TabButton
+                            label={list.name}
+                            count={tasks.filter(t => t.listId === list.id && !t.completed).length}
+                            active={activeTab === list.id}
+                            onClick={() => setActiveTab(list.id)}
+                            onDelete={() => deleteList(list.id)}
+                            onRename={(name) => renameList(list.id, name)}
+                        />
+                    </DroppableTab>
                 ))}
 
                 <div className="relative">
@@ -89,6 +91,18 @@ export function Sidebar({
                     <History size={20} className={showCompleted ? "text-purple-400" : "text-white/40 group-hover:text-white"} />
                 </button>
             )}
+        </div>
+    );
+}
+
+function DroppableTab({ id, children }: { id: string, children: React.ReactNode }) {
+    const { setNodeRef, isOver } = useDroppable({ id });
+    return (
+        <div
+            ref={setNodeRef}
+            className={`rounded-full transition-all duration-200 ${isOver ? 'ring-2 ring-white/50 scale-105 bg-white/10' : ''}`}
+        >
+            {children}
         </div>
     );
 }
