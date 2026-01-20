@@ -85,10 +85,15 @@ export function Sidebar({
             {hasLists && (
                 <button
                     onClick={toggleShowCompleted}
-                    className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors group shrink-0"
+                    className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors group shrink-0"
                     title={showCompleted ? "Hide history" : "Show completed tasks"}
                 >
                     <History size={20} className={showCompleted ? "text-purple-400" : "text-white/40 group-hover:text-white"} />
+                    {tasks.filter(t => t.listId === activeTab && t.completed).length > 0 && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-white/10 border border-white/10 backdrop-blur-md rounded-full text-[10px] flex items-center justify-center text-white pointer-events-none">
+                            {tasks.filter(t => t.listId === activeTab && t.completed).length}
+                        </span>
+                    )}
                 </button>
             )}
         </div>

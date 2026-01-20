@@ -34,7 +34,10 @@ export function CompletedTasksPanel({ isOpen, onClose, tasks, onToggle, onDelete
                     >
                         {/* Header */}
                         <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                            <h2 className="text-xl font-light text-white">History</h2>
+                            <h2 className="text-xl font-light text-white">
+                                History
+                                {tasks.length > 0 && <span className="ml-2 text-white/40 text-lg">({tasks.length})</span>}
+                            </h2>
                             <button
                                 onClick={onClose}
                                 className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/50 hover:text-white"
