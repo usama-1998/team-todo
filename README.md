@@ -12,6 +12,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 - **Completed Tasks Side Panel**: Access specific task history in a dedicated glassmorphic slide-over panel on the left, with an intuitive "Restore" option.
 - **Improved Task Counts**: Tab counters now reflect only active tasks, ignoring completed ones.
 - **Completed Tasks Counter**: A badge on the history button and a count in the panel header now show exactly how many tasks you've completed for the current list.
+- **Visual Polish**: Refined the Sidebar UI to ensure consistent glassmorphism effects on all icons.
 - **Drag & Drop**: Move tasks between lists and reorder them with ease.
 
 - **Modular Architecture** - Refactored into specialized components for better maintainability and performance.
