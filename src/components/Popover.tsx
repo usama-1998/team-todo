@@ -14,38 +14,37 @@ export function Popover({ isOpen, onClose, triggerRef, children, className = '',
     const [style, setStyle] = useState<React.CSSProperties>({});
     const contentRef = useRef<HTMLDivElement>(null);
 
+    // Use useLayoutEffect to measure and position before paint to avoid flickering
     useEffect(() => {
         if (!isOpen || !triggerRef.current) return;
 
         const updatePosition = () => {
             if (!triggerRef.current) return;
-            const rect = triggerRef.current.getBoundingClientRect();
+            const triggerRect = triggerRef.current.getBoundingClientRect();
+            const contentRect = contentRef.current?.getBoundingClientRect();
 
-            // STRICT REQUEST: "Left side of the date"
+            // Standard "Left side" positioning
+            // Default: Align top of popover with top of trigger (minus offset)
+            let top = triggerRect.top - 40;
+            let left = triggerRect.left - 8;
 
-            // Vertical alignment: Align top of popover with top of trigger
-            // (Optional: Center vertically? Usually "left side" means side-by-side top aligned or centered)
-            // Let's go with Top-Aligned for stability, or slightly adjusted if needed.
-            // USER REQUEST: "move it a bit higher"
-            // Shifting up by 40px to give it a slight lift relative to the trigger
-            let top = rect.top - 40;
+            // Transform: Move it 100% of its own width to the left
+            const xTransform = '-100%';
+            const yTransform = '0%';
 
-            // Horizontal alignment: 
-            // Trigger Left Edge - some gap
-            let left = rect.left - 8;
+            // Vertical Collision Detection
+            if (contentRect) {
+                const viewportHeight = window.innerHeight;
+                const popoverHeight = contentRect.height;
+                const bottomEdge = top + popoverHeight;
 
-            // Transform: Move it 100% of its own width to the left so it sits *before* the trigger
-            let xTransform = '-100%';
-            let yTransform = '0%';
-
-            const transformOrigin = 'top right';
-
-            // Collision check (Basic):
-            // If it goes off the left edge (left < width?), we might simple stick to this for now as requested.
-            // If screen is too narrow (mobile), "Left" might be bad.
-            // However, user specifically asked for "Left side". 
-            // Mobile consideration: If window.innerWidth < 768, maybe keep it centered/modal?
-            // For this specific request, I will enforce Left.
+                // If popover goes below the viewport, shift it up
+                if (bottomEdge > viewportHeight - 20) { // 20px padding
+                    // Calculate new top to fit in viewport
+                    // We try to align bottom of popover with bottom of viewport (minus padding)
+                    top = Math.max(20, viewportHeight - popoverHeight - 20);
+                }
+            }
 
             setStyle({
                 top: `${top}px`,
@@ -53,16 +52,22 @@ export function Popover({ isOpen, onClose, triggerRef, children, className = '',
                 transform: `translate(${xTransform}, ${yTransform})`,
                 position: 'fixed',
                 zIndex: 9999,
-                transformOrigin,
+                // transformOrigin: 'top right', // Removed to let standard flow work better with shifting
             });
         };
 
+        // Run immediately
         updatePosition();
+
+        // Also wait for next frame to ensure content is rendered/sized if it wasn't valid yet
+        // (This helps if height wasn't available in first pass)
+        const rafId = requestAnimationFrame(updatePosition);
 
         window.addEventListener('scroll', updatePosition, true);
         window.addEventListener('resize', updatePosition);
 
         return () => {
+            cancelAnimationFrame(rafId);
             window.removeEventListener('scroll', updatePosition, true);
             window.removeEventListener('resize', updatePosition);
         };
