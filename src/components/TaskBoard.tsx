@@ -55,6 +55,20 @@ export function TaskBoard({
         task.listId === activeTab && !task.completed
     );
 
+    // Sort tasks: closest due date first
+    filteredTasks.sort((a, b) => {
+        // If both have due dates
+        if (a.dueDate && b.dueDate) {
+            return a.dueDate - b.dueDate;
+        }
+        // If only a has due date, it comes first
+        if (a.dueDate) return -1;
+        // If only b has due date, it comes first
+        if (b.dueDate) return 1;
+        // If neither has due date, keep original order (which is essentially insertion order or drag order)
+        return 0;
+    });
+
 
     return (
         <>

@@ -7,6 +7,8 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 ## ✨ Features
 
 ### Recent Updates
+- **Auto-Sorting**: Tasks are now automatically sorted by their due date, keeping your most urgent items at the top.
+- **Time Selection**: Added optional time selection to the date picker for precise scheduling.
 - **Enhanced Task Completion UI**: Completed tasks now feature a refined look with opacity reduction, grayscale effect, and smooth strikethrough animation.
 - **Refined Interaction**: Clicking a task row now expands details for better usability, while only the checkbox toggles completion to prevent accidental closures.
 - **Smarter Date Picker**: Fixed calendar logic for precise day alignment and added smart positioning to prevent screen cutoff.

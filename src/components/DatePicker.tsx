@@ -48,7 +48,20 @@ export function DatePicker({ selectedDate, onChange, onClose }: DatePickerProps)
 
 
     const handleSelectDate = (date: Date) => {
-        onChange(format(date, 'yyyy-MM-dd'));
+        const dateStr = format(date, 'yyyy-MM-dd');
+        // Preserve time if it exists in current selectedDate
+        if (selectedDate && selectedDate.includes('T')) {
+            const timePart = selectedDate.split('T')[1];
+            onChange(`${dateStr}T${timePart}`);
+        } else {
+            onChange(dateStr);
+        }
+        // Don't close immediately if we want to allow time selection? 
+        // User might want to just pick date. Let's keep existing behavior (close on date pick)
+        // OR, if we added time input, maybe we shouldn't close?
+        // Let's close for now as per standard date picker behavior, user can re-open to add time or we rely on them adding time AFTER date?
+        // Better UX: Don't close immediately if we want time?
+        // But user request was "optional" time. so selecting date should probably close it for speed.
         onClose();
     };
 
@@ -145,8 +158,35 @@ export function DatePicker({ selectedDate, onChange, onClose }: DatePickerProps)
                 ))}
             </div>
 
+            {/* Time Selection */}
+            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2 flex-grow">
+                    <div className="text-white/40 text-xs font-medium uppercase tracking-wider">Time</div>
+                    <input
+                        type="time"
+                        value={selectedDate && selectedDate.includes('T') ? selectedDate.split('T')[1].substring(0, 5) : ''}
+                        onChange={(e) => {
+                            const time = e.target.value;
+                            if (!selectedDate) {
+                                // If no date selected, assume today
+                                const today = format(new Date(), 'yyyy-MM-dd');
+                                onChange(`${today}T${time}`);
+                            } else {
+                                const datePart = selectedDate.split('T')[0];
+                                if (time) {
+                                    onChange(`${datePart}T${time}`);
+                                } else {
+                                    onChange(datePart);
+                                }
+                            }
+                        }}
+                        className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-white/20 flex-grow"
+                    />
+                </div>
+            </div>
+
             {selectedDate && (
-                <div className="mt-4 pt-4 border-t border-white/5 flex justify-center">
+                <div className="mt-2 pt-2 flex justify-center">
                     <button onClick={() => { onChange(''); onClose(); }} className="text-xs text-white/40 hover:text-red-400 transition-colors flex items-center gap-1.5">
                         <X size={12} /> Clear Date
                     </button>

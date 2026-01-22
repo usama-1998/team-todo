@@ -98,11 +98,17 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate, isOverlay }: Task
         const now = new Date();
         const diffDays = Math.ceil((timestamp - now.getTime()) / (1000 * 60 * 60 * 24));
 
-        if (diffDays < 0) return { text: `Overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''}`, color: 'text-red-400 bg-red-500/20' };
-        if (diffDays === 0) return { text: 'Due today', color: 'text-amber-400 bg-amber-500/20' };
-        if (diffDays === 1) return { text: 'Due tomorrow', color: 'text-yellow-400 bg-yellow-500/20' };
-        if (diffDays <= 7) return { text: `Due in ${diffDays} days`, color: 'text-green-400 bg-green-500/20' };
-        return { text: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), color: 'text-white/60 bg-white/10' };
+        const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
+        const timeStr = hasTime ? date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        const text = hasTime ? `${dateStr}, ${timeStr}` : dateStr;
+
+        if (diffDays < 0) return { text: `Overdue (${text})`, color: 'text-red-400 bg-red-500/20' };
+        if (diffDays === 0) return { text: `Due today ${hasTime ? 'at ' + timeStr : ''}`, color: 'text-amber-400 bg-amber-500/20' };
+        if (diffDays === 1) return { text: `Due tomorrow ${hasTime ? 'at ' + timeStr : ''}`, color: 'text-yellow-400 bg-yellow-500/20' };
+        if (diffDays <= 7) return { text: `Due in ${diffDays} days (${text})`, color: 'text-green-400 bg-green-500/20' };
+        return { text: text, color: 'text-white/60 bg-white/10' };
     };
 
 
