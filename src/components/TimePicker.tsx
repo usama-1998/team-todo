@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useEffect, useRef } from 'react';
 
 interface TimePickerProps {
     value: string; // "HH:mm" (24h format) or empty
@@ -17,6 +18,22 @@ export function TimePicker({ value, onChange }: TimePickerProps) {
     const minuteSteps = Array.from({ length: 12 }, (_, i) => i * 5); // 0, 5, 10... 55
     const periods = ['AM', 'PM'];
 
+    // Refs for scrolling
+    const hoursRef = useRef<HTMLDivElement>(null);
+    const minutesRef = useRef<HTMLDivElement>(null);
+
+    // Scroll to active time on mount
+    useEffect(() => {
+        if (hoursRef.current) {
+            const activeHour = hoursRef.current.querySelector('[data-active="true"]');
+            if (activeHour) activeHour.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+        if (minutesRef.current) {
+            const activeMinute = minutesRef.current.querySelector('[data-active="true"]');
+            if (activeMinute) activeMinute.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+    }, []); // Run once on mount
+
     const handleTimeChange = (h: number, m: number, p: string) => {
         let newHour24 = h;
         if (p === 'PM' && h !== 12) newHour24 += 12;
@@ -29,11 +46,15 @@ export function TimePicker({ value, onChange }: TimePickerProps) {
     return (
         <div className="h-[200px] flex gap-2 relative">
             {/* Hours */}
-            <div className="flex-1 flex flex-col gap-1 overflow-y-auto custom-scrollbar active:cursor-grabbing snap-y snap-mandatory py-[80px]">
+            <div
+                ref={hoursRef}
+                className="flex-1 flex flex-col gap-1 overflow-y-auto no-scrollbar active:cursor-grabbing snap-y snap-mandatory py-[80px]"
+            >
                 {hours.map(h => (
                     <button
                         key={`h-${h}`}
                         onClick={() => handleTimeChange(h, minutes, period)}
+                        data-active={h === hours12}
                         className={clsx(
                             "h-10 shrink-0 flex items-center justify-center rounded-lg transition-all snap-center",
                             h === hours12
@@ -50,11 +71,15 @@ export function TimePicker({ value, onChange }: TimePickerProps) {
             <div className="flex items-center justify-center text-white/20 font-bold text-xl pb-1">:</div>
 
             {/* Minutes */}
-            <div className="flex-1 flex flex-col gap-1 overflow-y-auto custom-scrollbar active:cursor-grabbing snap-y snap-mandatory py-[80px]">
+            <div
+                ref={minutesRef}
+                className="flex-1 flex flex-col gap-1 overflow-y-auto no-scrollbar active:cursor-grabbing snap-y snap-mandatory py-[80px]"
+            >
                 {minuteSteps.map(m => (
                     <button
                         key={`m-${m}`}
                         onClick={() => handleTimeChange(hours12, m, period)}
+                        data-active={m === minutes}
                         className={clsx(
                             "h-10 shrink-0 flex items-center justify-center rounded-lg transition-all snap-center",
                             m === minutes

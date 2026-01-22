@@ -85,6 +85,15 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* Hide scrollbar completely utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Mesh Gradient for Background */
 .mesh-gradient {
   position: absolute;

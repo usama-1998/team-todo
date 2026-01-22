@@ -8,7 +8,7 @@ A beautiful, modern, and highly modular task management app built with React, Ty
 
 ### Recent Updates
 - **Auto-Sorting**: Tasks are now automatically sorted by their due date, keeping your most urgent items at the top.
-- **Precision Time Picker**: New custom glassmorphic time picker with easy column-based selection (Hours, Minutes, AM/PM) and an option to remove time.
+- **Precision Time Picker**: Fixed alignment issues and optimized scrolling for the new custom glassmorphic time picker, ensuring a smooth selection experience.
 - **Enhanced Task Completion UI**: Completed tasks now feature a refined look with opacity reduction, grayscale effect, and smooth strikethrough animation.
 - **Refined Interaction**: Clicking a task row now expands details for better usability, while only the checkbox toggles completion to prevent accidental closures.
 - **Smarter Date Picker**: Fixed calendar logic for precise day alignment and added smart positioning to prevent screen cutoff.
