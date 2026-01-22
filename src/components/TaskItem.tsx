@@ -146,7 +146,7 @@ export function TaskItem({ task, onToggle, onDelete, onUpdate, isOverlay }: Task
                 {/* Main Task Row */}
                 <div
                     className="flex items-center gap-3 p-3 cursor-pointer"
-                    onClick={handleToggle}
+                    onClick={() => setIsExpanded(!isExpanded)}
                 >
                     {/* Drag Handle */}
                     <div

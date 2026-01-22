@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X, Sun, Sunrise, Coffee, CalendarRange } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, addDays, nextSaturday, nextMonday, startOfWeek } from 'date-fns';
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, addDays, nextSaturday, nextMonday } from 'date-fns';
 import clsx from 'clsx';
 
 interface DatePickerProps {
@@ -33,7 +33,7 @@ export function DatePicker({ selectedDate, onChange, onClose }: DatePickerProps)
     }, [onClose]);
 
     const days = eachDayOfInterval({
-        start: startOfWeek(startOfMonth(currentMonth)), // Start from the beginning of the week
+        start: startOfMonth(currentMonth),
         end: endOfMonth(currentMonth),
     });
 
